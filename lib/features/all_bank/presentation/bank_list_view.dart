@@ -39,29 +39,17 @@ class _BankListViewState extends State<BankListView> {
             builder: (context, constraint) {
               if (constraint.maxWidth > 600) {
                 return GridView.count(
+                  padding: const EdgeInsets.all(16),
                   crossAxisCount: 5,
                   mainAxisSpacing: 16,
-                  children: records!
-                      .map(
-                        (record) => Container(
-                          color: Colors.red,
-                        ),
-                      )
-                      .toList(),
+                  crossAxisSpacing: 8,
+                  children: records!.map((record) => Card(child: BankItem(record: record))).toList(),
                 );
               }
               return ListView.separated(
                 itemBuilder: (_, index) {
                   final record = records[index];
-                  return ListTile(
-                    leading: Image.network(
-                      record.imageUrl ?? '',
-                      errorBuilder: (_, __, ___) =>
-                          const Icon(Icons.error, size: 55),
-                    ),
-                    title: Text(record.name ?? ''),
-                    subtitle: Text(record.shortName ?? ''),
-                  );
+                  return BankItem(record: record);
                 },
                 separatorBuilder: (_, __) => const Divider(),
                 itemCount: records!.length,
@@ -74,6 +62,27 @@ class _BankListViewState extends State<BankListView> {
           child: Text('There are no any banks to be fetched!!!'),
         );
       },
+    );
+  }
+}
+
+class BankItem extends StatelessWidget {
+  const BankItem({super.key, required this.record});
+
+  final BankRecordModel record;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Image.network(
+        record.imageUrl ?? '',
+        errorBuilder: (_, __, ___) => const Icon(Icons.error, size: 55),
+      ),
+      title: Text(
+        record.name ?? '',
+        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+      ),
+      subtitle: Text(record.shortName ?? ''),
     );
   }
 }
